@@ -33,7 +33,7 @@ compatible con ARCore y la app *Google Play Services for AR*.
 
 ## 🏗️ Arquitectura en capas
 
-```
+```text
 lib/
 ├── dominio/        ← reglas del negocio (Dart puro, sin Flutter)
 │   dinero · producto · carrito · validadores · direccion · tarjeta
@@ -61,9 +61,7 @@ sin emulador.
 ### 1. 🔴 ROJO — las pruebas se escriben primero y fallan
 
 Se escribieron las 60 pruebas de `test/` **antes** que el código. Al correr `flutter test`, falla
-porque `lib/dominio/...` todavía no existe:
-
-![Rojo: las pruebas no compilan](capturas/01_rojo_no_compila.png)
+porque `lib/dominio/...` todavía no existe.
 
 ### 2. ❌ Error de lógica atrapado por una prueba
 
@@ -74,9 +72,7 @@ int porcentaje(int centavos, int pct) => (centavos * pct) ~/ 100;   // ❌ trunc
 ```
 
 La prueba de borde `porcentaje(9999, 10)` esperaba **1000** centavos y obtuvo **999**: se perdía un
-centavo. Este es el caso que el manual pide vigilar:
-
-![Error de redondeo](capturas/02_error_redondeo.png)
+centavo. Este es el caso que el manual pide vigilar.
 
 **Corrección** (se suma la mitad del divisor antes de dividir, solo con enteros):
 
@@ -87,21 +83,17 @@ int porcentaje(int centavos, int pct) => (centavos * pct + 50) ~/ 100;  // ✅ r
 ### 3. 🔵 REFACTOR — limpiar sin romper nada
 
 `flutter analyze` señaló 3 avisos de estilo en `ServicioCheckout` (campos que se podían inicializar
-directo en el constructor):
+directo en el constructor).
 
-![Analyze con avisos](capturas/03_analyze_avisos.png)
-
-Se refactorizó el constructor a `required this._catalogo, ...` y se volvió a correr todo:
-
-![Analyze limpio](capturas/04_analyze_limpio.png)
+Se refactorizó el constructor a `required this._catalogo, ...` y se volvió a correr todo hasta dejar `flutter analyze` limpio.
 
 ### 4. 🟢 VERDE — las 60 pruebas pasan
 
-![Verde: 60 pruebas pasan](capturas/05_verde_60_pruebas.png)
+Las 60 pruebas del proyecto pasan tras completar el ciclo de desarrollo y correcciones.
 
 ### 5. 📦 Compilación del APK
 
-![Compilación del APK](capturas/06_build_apk.png)
+El APK de liberación se compila en modo `release`.
 
 > La primera compilación tardó ~71 min en un equipo con 8 GB de RAM: el paso de R8 (reducción de
 > código Java) se quedó sin memoria libre y Windows tuvo que usar el disco. Las siguientes
